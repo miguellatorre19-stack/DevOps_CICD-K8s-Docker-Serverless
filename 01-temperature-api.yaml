@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: temperaturas-backend
+spec: 
+   ports:
+    - port: 5000
+   selector: 
+     app: temperaturas-backend
+   type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temperaturas-backend
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: temperaturas-backend
+  template: 
+    metadata: 
+      labels:
+        app: temperaturas-backend
+    spec: 
+      containers: 
+      - name:  temperaturas-backend
+      image: 
+      ports: 
+        - containerPort: 3001
+      resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"     
+      
+  
+
