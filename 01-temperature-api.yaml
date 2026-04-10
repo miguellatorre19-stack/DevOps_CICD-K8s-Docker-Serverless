@@ -4,10 +4,12 @@ metadata:
   name: temperaturas-backend
 spec: 
    ports:
-    - port: 5000
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
    selector: 
      app: temperaturas-backend
-   type: LoadBalancer
+   type: ClusterIP
 
 ---
 apiVersion: apps/v1
@@ -15,7 +17,7 @@ kind: Deployment
 metadata:
   name: temperaturas-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector: 
     matchLabels: 
       app: temperaturas-backend
@@ -28,7 +30,7 @@ spec:
       - name:  temperaturas-backend
       image: 
       ports: 
-        - containerPort: 3001
+        - containerPort: 5000
       resources:
             requests:
               memory: "128Mi"
