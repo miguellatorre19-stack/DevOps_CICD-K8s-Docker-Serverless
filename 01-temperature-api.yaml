@@ -28,7 +28,7 @@ spec:
     spec: 
       containers: 
       - name:  temperaturas-backend
-      image: 
+      image: miguellatorre/temperaturas-backend:latest
       ports: 
         - containerPort: 5000
       resources:
