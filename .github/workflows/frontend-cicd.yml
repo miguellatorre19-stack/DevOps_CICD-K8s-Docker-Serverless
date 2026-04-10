@@ -7,6 +7,8 @@ on:
       - "frontend/**"
       - "manifests/frontend.yaml"
       - ".github/workflows/frontend-cicd.yml"
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -21,6 +23,7 @@ env:
 
 jobs:
   build-push-deploy:
+    name: Deployment
     runs-on: ubuntu-latest
 
     steps:
@@ -35,6 +38,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -43,6 +47,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha
+      - name: Compute immutable image tag
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
@@ -63,12 +69,12 @@ jobs:
 
       - name: Update kubeconfig for EKS
         run: aws eks update-kubeconfig --region "$AWS_REGION" --name "$EKS_CLUSTER_NAME"
-
+        
       - name: Replace image in manifest
         run: |
-          sed -i "s|IMAGE_PLACEHOLDER|${DOCKERHUB_IMAGE}:${GITHUB_SHA}|g" "$K8S_MANIFEST"
-
+          sed -i "s|IMAGE_PLACEHOLDER|${DOCKERHUB_IMAGE}:${IMAGE_TAG}|g" manifests/02-temperature-web.yaml
+      
       - name: Deploy frontend to EKS
         run: |
-          kubectl apply -n "$K8S_NAMESPACE" -f "$K8S_MANIFEST"
-          kubectl rollout status deployment/temperaturas-frontend -n "$K8S_NAMESPACE"
+          kubectl apply -f manifests/02-temperature-web.yaml
+          kubectl rollout status deployment/temperaturas-frontend -n default
