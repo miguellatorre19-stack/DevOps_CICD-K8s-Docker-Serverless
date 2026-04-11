@@ -27,15 +27,15 @@ spec:
     spec: 
       containers: 
       - name:  temperaturas-frontend
-      image: 
-      ports: 
-        - containerPort: 3001
-      resources:
+        image: miguellatorre/temperaturas-frontend 
+        ports: 
+          - containerPort: 3001
+        resources:
             requests:
               memory: "128Mi"
               cpu: "100m"
             limits:
               memory: "256Mi"
-              cpu: "500m"     
+              cpu: "500m"        
       
   
