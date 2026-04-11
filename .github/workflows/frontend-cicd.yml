@@ -7,11 +7,6 @@ on:
       - "frontend/**"
       - "manifests/02-temperature-web.yaml"
       - ".github/workflows/frontend-cicd.yml"
-  pull_request:
-    branches: [ "main" ]
-      - "frontend/**"
-      - "manifests/02-temperature-web.yaml"
-      - ".github/workflows/frontend-cicd.yml"
   workflow_dispatch:
 
 permissions:
@@ -79,7 +74,11 @@ jobs:
         run: aws eks update-kubeconfig --region "$AWS_REGION" --name "$EKS_CLUSTER_NAME"
         
       - name: Deploy frontend to EKS
-          run: |
+        run: |
           kubectl set image deployment/temperaturas-frontend \
             temperaturas-frontend=${DOCKERHUB_IMAGE}:${IMAGE_TAG} -n default
-          kubectl rollout status deployment/temperaturas-frontend -n default
+          kubectl rollout status deployment/temperaturas-frontend -n default 
+       
+      
+     
+    

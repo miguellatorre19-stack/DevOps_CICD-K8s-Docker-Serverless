@@ -28,10 +28,10 @@ spec:
     spec: 
       containers: 
       - name:  temperaturas-backend
-      image: miguellatorre/temperaturas-backend:latest
-      ports: 
+        image: miguellatorre/temperaturas-backend
+        ports: 
         - containerPort: 5000
-      resources:
+        resources:
             requests:
               memory: "128Mi"
               cpu: "100m"
