@@ -64,20 +64,13 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Install kubectl
-        if: github.event_name != 'pull_request'
-        uses: azure/setup-kubectl@v4
-        with:
-          version: latest
-
       - name: Update kubeconfig for EKS
         run: aws eks update-kubeconfig --region "$AWS_REGION" --name "$EKS_CLUSTER_NAME"
         
       - name: Deploy frontend to EKS
         run: |
-          kubectl set image deployment/temperaturas-frontend \
-            temperaturas-frontend=${DOCKERHUB_IMAGE}:${IMAGE_TAG} -n default
-          kubectl rollout status deployment/temperaturas-frontend -n default 
+          kubectl apply -f manifests/temperature-web.yaml
+          kubectl rollout status deployment/temperaturas-frontend -n default
        
       
      
