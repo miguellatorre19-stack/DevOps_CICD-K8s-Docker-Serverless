@@ -69,6 +69,9 @@ jobs:
         
       - name: Deploy frontend to EKS
         run: |
+          pwd
+          ls
+          ls manifests
           kubectl apply -f ./manifests/01-temperatura-web.yaml
           kubectl rollout status deployment/temperaturas-frontend -n default
        
