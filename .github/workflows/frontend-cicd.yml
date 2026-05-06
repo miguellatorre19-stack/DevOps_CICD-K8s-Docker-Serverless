@@ -74,6 +74,7 @@ jobs:
           ls manifests
           kubectl apply -f "$K8S_MANIFEST"
           kubectl rollout status deployment/temperaturas-frontend -n default
+          kubectl rollout restart deployment/temperaturas-frontend -n default
        
       
      
